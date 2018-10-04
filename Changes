@@ -1,0 +1,3 @@
+0.001   2016-03-31 (PERLANCAR) (unreleased)
+
+	- Add functions: add_version(), subtract_version().
