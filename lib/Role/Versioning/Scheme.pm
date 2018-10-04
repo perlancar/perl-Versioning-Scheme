@@ -81,7 +81,7 @@ It must die when an ambiguous number is specified:
 
 =item * part => int (default: -1)
 
-Specify which part to bump, where 1 means the biggest part, 2 means the second
+Specify which part to bump, where 0 means the biggest part, 1 means the second
 biggest part, and so on. It can also be negative (-1 means the smallest part, -2
 the second smallest part, and so on). For example in dotted version:
 

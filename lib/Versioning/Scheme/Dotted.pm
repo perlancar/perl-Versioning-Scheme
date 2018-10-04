@@ -135,6 +135,17 @@ specify options: C<num>, C<part>, C<reset_smaller> like spacified in
 L<Role::Versioning::Scheme>.
 
 
+=head1 METHODS
+
+=head2 is_valid
+
+=head2 normalize
+
+=head2 cmp
+
+=head2 bump
+
+
 =head1 SEE ALSO
 
 L<Versioning::Scheme>, L<Role::Versioning::Scheme>
