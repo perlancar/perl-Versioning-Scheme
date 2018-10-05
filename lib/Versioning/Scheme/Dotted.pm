@@ -11,16 +11,16 @@ use Role::Versioning::Scheme;
 
 my $re = qr/\A[0-9]+(?:\.[0-9]+)*\z/;
 
-sub is_valid {
+sub is_valid_version {
     my ($self, $v) = @_;
     $v =~ $re ? 1:0;
 }
 
-sub normalize {
+sub normalize_version {
     my ($self, $v, $opts) = @_;
     $opts //= {};
 
-    die "Invalid version '$v'" unless $self->is_valid($v);
+    die "Invalid version '$v'" unless $self->is_valid_version($v);
 
     my @parts = split /\./, $v;
     if (defined $opts->{parts}) {
@@ -34,11 +34,11 @@ sub normalize {
     join(".", map { $_ // "0" } @parts);
 }
 
-sub cmp {
+sub cmp_version {
     my ($self, $v1, $v2) = @_;
 
-    die "Invalid version '$v1'" unless $self->is_valid($v1);
-    die "Invalid version '$v2'" unless $self->is_valid($v2);
+    die "Invalid version '$v1'" unless $self->is_valid_version($v1);
+    die "Invalid version '$v2'" unless $self->is_valid_version($v2);
 
     my @parts1 = split /\./, $v1;
     my @parts2 = split /\./, $v2;
@@ -50,14 +50,14 @@ sub cmp {
     0;
 }
 
-sub bump {
+sub bump_version {
     my ($self, $v, $opts) = @_;
     $opts //= {};
     $opts->{num} //= 1;
     $opts->{part} //= -1;
     $opts->{reset_smaller} //= 1;
 
-    die "Invalid version '$v'" unless $self->is_valid($v);
+    die "Invalid version '$v'" unless $self->is_valid_version($v);
     die "Invalid 'num', must be non-zero" unless $opts->{num} != 0;
     my @parts = split /\./, $v;
     die "Invalid 'part', must not be smaller than -".@parts
@@ -111,6 +111,8 @@ sub bump {
  Versioning::Scheme::Dotted->bump('1.2.3', {part=>0});                    # => '2.0.0'
  Versioning::Scheme::Dotted->bump('1.2.3', {part=>-2, reset_smaller=>0}); # => '1.3.3'
 
+You can also mix this role into your class.
+
 
 =head1 DESCRIPTION
 
@@ -137,13 +139,13 @@ L<Role::Versioning::Scheme>.
 
 =head1 METHODS
 
-=head2 is_valid
+=head2 is_valid_version
 
-=head2 normalize
+=head2 normalize_version
 
-=head2 cmp
+=head2 cmp_version
 
-=head2 bump
+=head2 bump_version
 
 
 =head1 SEE ALSO
