@@ -7,6 +7,7 @@ use 5.010001;
 use strict;
 use warnings;
 
+use Role::Tiny;
 use Role::Versioning::Scheme;
 
 my $re = qr/\A[0-9]+(?:\.[0-9]+)*\z/;
