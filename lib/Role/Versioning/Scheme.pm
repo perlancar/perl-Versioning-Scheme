@@ -56,9 +56,14 @@ Bump a version number string and return a bumped version number string.
 
 Must die when C<$v> is invalid.
 
-By default it must bump the smallest part by one. Example:
+By default it must bump the bumpable least significant part by one. Example in
+dotted scheme:
 
  my $v2 = $vs->bump_version('1.2.3'); # => '1.2.4'
+
+In monotonic scheme:
+
+ my $v2 = $vs->bump_version('1.2+foo'); # => '1.3+foo'
 
 Some options this method can accept:
 
@@ -79,11 +84,13 @@ It must die when an ambiguous number is specified:
 
  my $v2 = $vs->bump_version('1.2.3', {num=>-4}); # dies
 
-=item * part => int (default: -1)
+=item * part => int
 
-Specify which part to bump, where 0 means the biggest part, 1 means the second
-biggest part, and so on. It can also be negative (-1 means the smallest part, -2
-the second smallest part, and so on). For example in dotted version:
+Specify which part to bump, where 0 means the most significant part, 1 means the
+second most significant part, and so on. It can also be negative (-1 means the
+least significant part, -2 the second least significant part, and so on). The
+default should be the bumpable least significant part. For example in dotted
+version:
 
  my $v2 = $vs->bump_version('1.2.3', {part=>-2}); # => '1.3.0'
 
