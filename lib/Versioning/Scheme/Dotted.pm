@@ -10,7 +10,7 @@ use warnings;
 use Role::Tiny;
 use Role::Versioning::Scheme;
 
-my $re = qr/\A[0-9]+(?:\.[0-9]+)*\z/;
+our $re = qr/\A[0-9]+(?:\.[0-9]+)*\z/;
 
 sub is_valid_version {
     my ($self, $v) = @_;
