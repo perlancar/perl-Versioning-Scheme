@@ -152,3 +152,5 @@ L<Role::Versioning::Scheme>.
 =head1 SEE ALSO
 
 L<Versioning::Scheme>, L<Role::Versioning::Scheme>
+
+L<Versioning::Scheme::Semantic>
