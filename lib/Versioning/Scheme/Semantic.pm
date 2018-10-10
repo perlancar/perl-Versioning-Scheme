@@ -74,7 +74,7 @@ sub bump_version {
  # checking validity
  Versioning::Scheme::Semantic->is_valid('0.0.1');    # 1
  Versioning::Scheme::Semantic->is_valid('0.01.1');   # 0 (zero prefix not allowed)
- Versioning::Scheme::Semantic->is_valid('0.01.1.0'); # 0
+ Versioning::Scheme::Semantic->is_valid('0.1.1.0');  # 0 (only X.Y.Z permitted)
 
  # normalizing (currently does nothing other than checking for validity)
  Versioning::Scheme::Semantic->normalize('1.2.0'); # => '1.2.0'

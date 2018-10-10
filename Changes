@@ -1,3 +1,10 @@
+0.005   2018-10-11 (PERLANCAR)
+
+	- Add Versioning::Scheme::Semantic.
+
+	- Monotonic: Follow the 1.2 version of monotonic versioning manifesto.
+
+
 0.004   2018-10-11 (PERLANCAR)
 
 	- Add Versioning::Scheme::Monotonic.
