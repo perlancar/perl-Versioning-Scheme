@@ -1,3 +1,11 @@
+0.006   2018-10-11 (PERLANCAR)
+
+	- Add Versioning::Scheme::Perl.
+
+	- [doc] Role::Versioning::Scheme: Change wording and default for
+          bump_version().
+
+
 0.005   2018-10-11 (PERLANCAR)
 
 	- Add Versioning::Scheme::Semantic.
