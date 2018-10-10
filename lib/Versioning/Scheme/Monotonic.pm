@@ -98,7 +98,7 @@ You can also mix this role into your class.
 
 =head1 DESCRIPTION
 
-This class implements the monotonic versioning scheme as described in [1]. A
+This role implements the monotonic versioning scheme as described in [1]. A
 version number comprises two whole numbers:
 
  COMPATIBILITY.RELEASE
