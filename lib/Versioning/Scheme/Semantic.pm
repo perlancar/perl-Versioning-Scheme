@@ -10,11 +10,31 @@ use warnings;
 use Role::Tiny;
 use Role::Versioning::Scheme;
 
-our $re = qr/\A([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\.([0-9]|[1-9][0-9]*)\z/;
+our $re = qr/
+                \A
+                ([0-9]|[1-9][0-9]*)\.                            # 1=major
+                ([0-9]|[1-9][0-9]*)\.                            # 2=minor
+                ([0-9]|[1-9][0-9]*)                              # 3=major
+                (?:-([0-9]|[1-9][0-9]*|[A-Za-z-][0-9A-Za-z-]*))? # 4=pre-release identifier
+                (?:\+([0-9A-Za-z-]+))?                           # 5=metadata
+                \z
+            /x;
 
 sub is_valid_version {
     my ($self, $v) = @_;
     $v =~ $re ? 1:0;
+}
+
+sub parse_version {
+    my ($self, $v) = @_;
+    $v =~ $re or return undef;
+    return {
+        major => $1,
+        minor => $2,
+        patch => $3,
+        prerelease => $4,
+        metadata => $5,
+    };
 }
 
 sub normalize_version {
@@ -28,10 +48,12 @@ sub normalize_version {
 sub cmp_version {
     my ($self, $v1, $v2) = @_;
 
-    die "Invalid version '$v1'" unless my ($x1, $y1, $z1) = $v1 =~ $re;
-    die "Invalid version '$v2'" unless my ($x2, $y2, $z2) = $v2 =~ $re;
+    die "Invalid version '$v1'" unless my ($x1, $y1, $z1, $pre1) = $v1 =~ $re;
+    die "Invalid version '$v2'" unless my ($x2, $y2, $z2, $pre2) = $v2 =~ $re;
 
-    ($x1 <=> $x2) || ($y1 <=> $y2) || ($z1 <=> $z2);
+    ($x1 <=> $x2) || ($y1 <=> $y2) || ($z1 <=> $z2) ||
+        ((defined($pre1) ? 0:1) <=> (defined($pre2) ? 0:1)) ||
+        (($pre1//'') cmp ($pre2//''));
 }
 
 sub bump_version {
@@ -41,9 +63,9 @@ sub bump_version {
     $opts->{part} //= -1;
     $opts->{reset_smaller} //= 1;
 
-    die "Invalid version '$v'" unless $self->is_valid_version($v);
+    die "Invalid version '$v'" unless my ($x, $y, $z, $pre, $meta) = $v =~ $re;
     die "Invalid 'num', must be non-zero" unless $opts->{num} != 0;
-    my @parts = split /\./, $v;
+    my @parts = ($x, $y, $z);
     die "Invalid 'part', must not be larger than ".$#parts
         if $opts->{part} > $#parts;
     die "Invalid 'part', must not be smaller than -".@parts
@@ -61,7 +83,11 @@ sub bump_version {
             $parts[$i] = sprintf("%0".length($parts[$i])."d", 0);
         }
     }
-    join(".", map {$_//0} @parts);
+    join("",
+         $parts[0], ".", $parts[1], ".", $parts[2],
+         (defined $pre ? "-$pre" : ""),
+         (defined $meta ? "+$meta" : ""),
+     );
 }
 
 1;
@@ -75,6 +101,7 @@ sub bump_version {
  Versioning::Scheme::Semantic->is_valid('0.0.1');    # 1
  Versioning::Scheme::Semantic->is_valid('0.01.1');   # 0 (zero prefix not allowed)
  Versioning::Scheme::Semantic->is_valid('0.1.1.0');  # 0 (only X.Y.Z permitted)
+ Versioning::Scheme::Semantic->is_valid('0.1.1-beta1+foobar');  # 1 (pre-release identifier and metada allowed)
 
  # normalizing (currently does nothing other than checking for validity)
  Versioning::Scheme::Semantic->normalize('1.2.0'); # => '1.2.0'
@@ -83,6 +110,9 @@ sub bump_version {
  Versioning::Scheme::Semantic->compare('1.2.3', '1.2.3');  # 0
  Versioning::Scheme::Semantic->compare('1.2.3', '1.2.12'); # -1
  Versioning::Scheme::Semantic->compare('1.3.0', '1.2.12'); # 1
+ Versioning::Scheme::Semantic->compare('1.2.3', '1.2.3-beta1'); # -1
+ Versioning::Scheme::Semantic->compare('1.2.3-beta1', '1.2.3-beta1'); # 0
+ Versioning::Scheme::Semantic->compare('1.2.3-beta1', '1.2.3-beta2'); # -1
 
  # bumping
  Versioning::Scheme::Semantic->bump('1.2.3');                               # => '1.2.4'
