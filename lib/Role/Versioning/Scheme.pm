@@ -7,6 +7,7 @@ requires qw(
                normalize_version
                cmp_version
                bump_version
+               parse_version
        );
 
 1;
@@ -22,6 +23,15 @@ Usage:
 
 Must return true when a string is a valid version number for the associated
 scheme, or false otherwise.
+
+=head2 parse_version
+
+Usage:
+
+ my $hash = $vs->parse_version('1.2.3'); # => {major=>1, minor=>2, patch=>3}
+
+Parse version number into elements. Should return hashref, or undef if version
+number is invalid.
 
 =head2 normalize_version
 

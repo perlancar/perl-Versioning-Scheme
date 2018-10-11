@@ -8,7 +8,8 @@ use strict;
 use warnings;
 
 use Role::Tiny;
-use Role::Versioning::Scheme;
+use Role::Tiny::With;
+with 'Role::Versioning::Scheme';
 use version;
 
 sub is_valid_version {
@@ -17,9 +18,18 @@ sub is_valid_version {
     $@ ? 0:1;
 }
 
-sub normalize_version {
-    my ($self, $v, $opts) = @_;
+sub parse_version {
+    my ($self, $v) = @_;
 
+    my $vp;
+    eval { $vp = version->parse($v) };
+    return undef if $@;
+    $vp =~ s/\Av//;
+    {parts => [split /\./, $vp]};
+}
+
+sub normalize_version {
+    my ($self, $v) = @_;
     version->parse($v)->normal;
 }
 

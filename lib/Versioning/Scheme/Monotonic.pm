@@ -7,14 +7,32 @@ use 5.010001;
 use strict;
 use warnings;
 
-use Role::Tiny;
-use Role::Versioning::Scheme;
+use Role::Tiny::With;
+with 'Role::Versioning::Scheme';
 
-our $re = qr/\A([1-9][0-9]*)\.([1-9][0-9]*)(\.0)?(\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?\z/;
+our $re = qr/
+                \A
+                ([1-9][0-9]*)\.                             # 1=compatibility
+                ([1-9][0-9]*)                               # 2=release
+                (?:\.(0))?                                  # 3=semver_marker
+                (?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?  # 4=metadata
+                \z
+            /x;
 
 sub is_valid_version {
     my ($self, $v) = @_;
     $v =~ $re ? 1:0;
+}
+
+sub parse_version {
+    my ($self, $v) = @_;
+    return undef unless my ($c, $r, $mark, $meta) = $v =~ $re;
+    return {
+        compatibility => $1,
+        release => $2,
+        semver_marker => $3,
+        metadata => $4,
+    };
 }
 
 sub normalize_version {
@@ -23,7 +41,7 @@ sub normalize_version {
 
     die "Invalid version '$v'" unless $v =~ $re;
 
-    "$1.$2" . ($4 || '');
+    "$1.$2" . (defined $4 ? ".$4" : "");
 }
 
 sub cmp_version {
@@ -41,7 +59,7 @@ sub bump_version {
     $opts->{num} //= 1;
     $opts->{part} //= 1;
 
-    die "Invalid version '$v'" unless my ($c, $r, $z, $m) = $v =~ $re;
+    die "Invalid version '$v'" unless my ($c, $r, $mark, $meta) = $v =~ $re;
     die "Invalid 'num', must be non-zero" unless $opts->{num} != 0;
     die "Invalid 'part', must be 0|1" unless $opts->{part} =~ /\A(0|1)\z/;
 
@@ -60,7 +78,12 @@ sub bump_version {
         }
         $r = $r + $opts->{num};
     }
-    join("", $c, ".", $r, ($z||''), ($m||''));
+    join(
+        "",
+        $c, ".", $r,
+        (defined $mark ? ".$mark" : ""),
+        (defined $meta ? ".$meta" : ""),
+    );
 }
 
 1;

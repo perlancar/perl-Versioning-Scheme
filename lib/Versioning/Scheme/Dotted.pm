@@ -8,13 +8,20 @@ use strict;
 use warnings;
 
 use Role::Tiny;
-use Role::Versioning::Scheme;
+use Role::Tiny::With;
+with 'Role::Versioning::Scheme';
 
 our $re = qr/\A[0-9]+(?:\.[0-9]+)*\z/;
 
 sub is_valid_version {
     my ($self, $v) = @_;
     $v =~ $re ? 1:0;
+}
+
+sub parse_version {
+    my ($self, $v) = @_;
+    $v =~ $re or return undef;
+    {parts => [split /\./, $v]};
 }
 
 sub normalize_version {

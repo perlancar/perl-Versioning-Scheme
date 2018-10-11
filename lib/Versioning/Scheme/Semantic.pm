@@ -8,7 +8,8 @@ use strict;
 use warnings;
 
 use Role::Tiny;
-use Role::Versioning::Scheme;
+use Role::Tiny::With;
+with 'Role::Versioning::Scheme';
 
 our $re = qr/
                 \A
