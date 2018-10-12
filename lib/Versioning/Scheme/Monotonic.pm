@@ -94,27 +94,31 @@ sub bump_version {
  use Versioning::Scheme::Monotonic;
 
  # checking validity
- Versioning::Scheme::Monotonic->is_valid('1.2');   # 1
- Versioning::Scheme::Monotonic->is_valid('1.02');  # 0
- Versioning::Scheme::Monotonic->is_valid('1.2.0'); # 1
- Versioning::Scheme::Monotonic->is_valid('1.2.1'); # 0
- Versioning::Scheme::Monotonic->is_valid('1.2+foo.123'); # 1
+ Versioning::Scheme::Monotonic->is_valid_version('1.2');   # 1
+ Versioning::Scheme::Monotonic->is_valid_version('1.02');  # 0
+ Versioning::Scheme::Monotonic->is_valid_version('1.2.0'); # 1
+ Versioning::Scheme::Monotonic->is_valid_version('1.2.1'); # 0
+ Versioning::Scheme::Monotonic->is_valid_version('1.2+foo.123'); # 1
+
+ # parsing
+ Versioning::Scheme::Monotonic->parse_version('1.02');        # => undef
+ Versioning::Scheme::Monotonic->parse_version('1.2+foo.123'); # {compatibility=>1, release=>2, metadata=>'foo.123'}
 
  # normalizing
- Versioning::Scheme::Monotonic->normalize('1.2.0'); # => '1.2'
- Versioning::Scheme::Monotonic->normalize('1.2.0+foo.123'); # => '1.2+foo.123'
+ Versioning::Scheme::Monotonic->normalize_version('1.2.0'); # => '1.2'
+ Versioning::Scheme::Monotonic->normalize_version('1.2.0+foo.123'); # => '1.2+foo.123'
 
  # comparing
- Versioning::Scheme::Monotonic->compare('1.2', '1.2.0'); # 0
- Versioning::Scheme::Monotonic->compare('1.2', '1.13');  # -1
- Versioning::Scheme::Monotonic->compare('2.2', '1.13');  # 1
- Versioning::Scheme::Monotonic->compare('2.2+alpha', '2.2+beta');  # -1
+ Versioning::Scheme::Monotonic->cmp_version('1.2', '1.2.0'); # 0
+ Versioning::Scheme::Monotonic->cmp_version('1.2', '1.13');  # -1
+ Versioning::Scheme::Monotonic->cmp_version('2.2', '1.13');  # 1
+ Versioning::Scheme::Monotonic->cmp_version('2.2+alpha', '2.2+beta');  # -1
 
  # bumping
- Versioning::Scheme::Monotonic->bump('1.2');            # => '1.3'
- Versioning::Scheme::Monotonic->bump('1.2', {num=>2});  # => '1.4'
- Versioning::Scheme::Monotonic->bump('1.2', {part=>0}); # => '2.3'
- Versioning::Scheme::Monotonic->bump('2.2', {num=>-1, part=>0}); # => '1.1'
+ Versioning::Scheme::Monotonic->bump_version('1.2');            # => '1.3'
+ Versioning::Scheme::Monotonic->bump_version('1.2', {num=>2});  # => '1.4'
+ Versioning::Scheme::Monotonic->bump_version('1.2', {part=>0}); # => '2.3'
+ Versioning::Scheme::Monotonic->bump_version('2.2', {num=>-1, part=>0}); # => '1.1'
 
 You can also mix this role into your class.
 
@@ -153,6 +157,8 @@ increase COMPATIBILITY instead; but in that case RELEASE will still be bumped by
 =head1 METHODS
 
 =head2 is_valid_version
+
+=head2 parse_version
 
 =head2 normalize_version
 

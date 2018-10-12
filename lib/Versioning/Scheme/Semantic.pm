@@ -99,29 +99,33 @@ sub bump_version {
  use Versioning::Scheme::Semantic;
 
  # checking validity
- Versioning::Scheme::Semantic->is_valid('0.0.1');    # 1
- Versioning::Scheme::Semantic->is_valid('0.01.1');   # 0 (zero prefix not allowed)
- Versioning::Scheme::Semantic->is_valid('0.1.1.0');  # 0 (only X.Y.Z permitted)
- Versioning::Scheme::Semantic->is_valid('0.1.1-beta1+foobar');  # 1 (pre-release identifier and metada allowed)
+ Versioning::Scheme::Semantic->is_valid_version('0.0.1');    # 1
+ Versioning::Scheme::Semantic->is_valid_version('0.01.1');   # 0 (zero prefix not allowed)
+ Versioning::Scheme::Semantic->is_valid_version('0.1.1.0');  # 0 (only X.Y.Z permitted)
+ Versioning::Scheme::Semantic->is_valid_version('0.1.1-beta1+foobar');  # 1 (pre-release identifier and metada allowed)
+
+ # parsing
+ $parsed = Versioning::Scheme::Semantic->parse_version('0.1');  # => undef
+ $parsed = Versioning::Scheme::Semantic->parse_version('0.1.2-beta1+foobar');  # => {major=>0, minor=>1, patch=>2, prerelease=>'beta1', metadata=>'foobar'}
 
  # normalizing (currently does nothing other than checking for validity)
- Versioning::Scheme::Semantic->normalize('1.2.0'); # => '1.2.0'
+ Versioning::Scheme::Semantic->normalize_version('1.2.0'); # => '1.2.0'
 
  # comparing
- Versioning::Scheme::Semantic->compare('1.2.3', '1.2.3');  # 0
- Versioning::Scheme::Semantic->compare('1.2.3', '1.2.12'); # -1
- Versioning::Scheme::Semantic->compare('1.3.0', '1.2.12'); # 1
- Versioning::Scheme::Semantic->compare('1.2.3', '1.2.3-beta1'); # -1
- Versioning::Scheme::Semantic->compare('1.2.3-beta1', '1.2.3-beta1'); # 0
- Versioning::Scheme::Semantic->compare('1.2.3-beta1', '1.2.3-beta2'); # -1
+ Versioning::Scheme::Semantic->cmp_version('1.2.3', '1.2.3');  # 0
+ Versioning::Scheme::Semantic->cmp_version('1.2.3', '1.2.12'); # -1
+ Versioning::Scheme::Semantic->cmp_version('1.3.0', '1.2.12'); # 1
+ Versioning::Scheme::Semantic->cmp_version('1.2.3', '1.2.3-beta1'); # -1
+ Versioning::Scheme::Semantic->cmp_version('1.2.3-beta1', '1.2.3-beta1'); # 0
+ Versioning::Scheme::Semantic->cmp_version('1.2.3-beta1', '1.2.3-beta2'); # -1
 
  # bumping
- Versioning::Scheme::Semantic->bump('1.2.3');                               # => '1.2.4'
- Versioning::Scheme::Semantic->bump('1.2.3', {num=>2});                     # => '1.2.5'
- Versioning::Scheme::Semantic->bump('1.2.3', {num=>-1});                    # => '1.2.2'
- Versioning::Scheme::Semantic->bump('1.2.3', {part=>-2});                   # => '1.3.0'
- Versioning::Scheme::Semantic->bump('1.2.3', {part=>0});                    # => '2.0.0'
- Versioning::Scheme::Semantic->bump('1.2.3', {part=>-2, reset_smaller=>0}); # => '1.3.3'
+ Versioning::Scheme::Semantic->bump_version('1.2.3');                               # => '1.2.4'
+ Versioning::Scheme::Semantic->bump_version('1.2.3', {num=>2});                     # => '1.2.5'
+ Versioning::Scheme::Semantic->bump_version('1.2.3', {num=>-1});                    # => '1.2.2'
+ Versioning::Scheme::Semantic->bump_version('1.2.3', {part=>-2});                   # => '1.3.0'
+ Versioning::Scheme::Semantic->bump_version('1.2.3', {part=>0});                    # => '2.0.0'
+ Versioning::Scheme::Semantic->bump_version('1.2.3', {part=>-2, reset_smaller=>0}); # => '1.3.3'
 
 You can also mix this role into your class.
 
@@ -147,6 +151,8 @@ L<Role::Versioning::Scheme>.
 =head1 METHODS
 
 =head2 is_valid_version
+
+=head2 parse_version
 
 =head2 normalize_version
 

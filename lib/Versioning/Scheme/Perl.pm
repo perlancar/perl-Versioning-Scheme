@@ -92,28 +92,32 @@ sub bump_version {
  use Versioning::Scheme::Perl;
 
  # checking validity
- Versioning::Scheme::Perl->is_valid('1.02');     # 1
- Versioning::Scheme::Perl->is_valid('1.0.0');    # 1
- Versioning::Scheme::Perl->is_valid('v1.0.0.0'); # 1
- Versioning::Scheme::Perl->is_valid('1.2beta');  # 0
+ Versioning::Scheme::Perl->is_valid_version('1.02');     # 1
+ Versioning::Scheme::Perl->is_valid_version('1.0.0');    # 1
+ Versioning::Scheme::Perl->is_valid_version('v1.0.0.0'); # 1
+ Versioning::Scheme::Perl->is_valid_version('1.2beta');  # 0
+
+ # parsing
+ $parsed = Versioning::Scheme::Perl->parse_version('1.2beta'); # => undef
+ $parsed = Versioning::Scheme::Perl->parse_version('1.2');     # => {parts=>[1, 2]}
 
  # normalizing
- Versioning::Scheme::Perl->normalize('0.1.2');             # => 'v0.1.2'
- Versioning::Scheme::Perl->normalize('1.02');              # => 'v1.20.0'
+ Versioning::Scheme::Perl->normalize_version('0.1.2');             # => 'v0.1.2'
+ Versioning::Scheme::Perl->normalize_version('1.02');              # => 'v1.20.0'
 
  # comparing
- Versioning::Scheme::Perl->compare('1.2.3', '1.2.3.0'); # 0
- Versioning::Scheme::Perl->compare('1.2.3', '1.2.4');   # -1
- Versioning::Scheme::Perl->compare('1.3.1', '1.2.4');   # 1
+ Versioning::Scheme::Perl->cmp_version('1.2.3', '1.2.3.0'); # 0
+ Versioning::Scheme::Perl->cmp_version('1.2.3', '1.2.4');   # -1
+ Versioning::Scheme::Perl->cmp_version('1.3.1', '1.2.4');   # 1
 
  # bumping
- Versioning::Scheme::Perl->bump('1.2.3');                               # => 'v1.2.4'
- Versioning::Scheme::Perl->bump('1.2.999');                             # => 'v1.3.0'
- Versioning::Scheme::Perl->bump('1.2.3', {num=>2});                     # => 'v1.2.5'
- Versioning::Scheme::Perl->bump('1.2.3', {num=>-1});                    # => 'v1.2.2'
- Versioning::Scheme::Perl->bump('1.2.3', {part=>-2});                   # => 'v1.3.0'
- Versioning::Scheme::Perl->bump('1.2.3', {part=>0});                    # => 'v2.0.0'
- Versioning::Scheme::Perl->bump('1.2.3', {part=>-2, reset_smaller=>0}); # => 'v1.3.3'
+ Versioning::Scheme::Perl->bump_version('1.2.3');                               # => 'v1.2.4'
+ Versioning::Scheme::Perl->bump_version('1.2.999');                             # => 'v1.3.0'
+ Versioning::Scheme::Perl->bump_version('1.2.3', {num=>2});                     # => 'v1.2.5'
+ Versioning::Scheme::Perl->bump_version('1.2.3', {num=>-1});                    # => 'v1.2.2'
+ Versioning::Scheme::Perl->bump_version('1.2.3', {part=>-2});                   # => 'v1.3.0'
+ Versioning::Scheme::Perl->bump_version('1.2.3', {part=>0});                    # => 'v2.0.0'
+ Versioning::Scheme::Perl->bump_version('1.2.3', {part=>-2, reset_smaller=>0}); # => 'v1.3.3'
 
 You can also mix this role into your class.
 
@@ -130,11 +134,15 @@ L<version>.pm.
 
 Uses L<version>.pm's C<parse()>.
 
+=head2 parse_version
+
 =head2 normalize_version
 
 Equivalent to:
 
  version->parse($v)->normal
+
+=head2 parse_version
 
 =head2 cmp_version
 
