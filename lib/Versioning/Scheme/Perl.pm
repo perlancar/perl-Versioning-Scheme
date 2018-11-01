@@ -85,7 +85,7 @@ sub bump_version {
 }
 
 1;
-# ABSTRACT: Version as dotted numbers
+# ABSTRACT: Perl (version.pm) version numbering
 
 =head1 SYNOPSIS
 
