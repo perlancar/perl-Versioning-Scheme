@@ -1,5 +1,8 @@
 package Role::Versioning::Scheme;
 
+# DATE
+# VERSION
+
 use Role::Tiny;
 
 requires qw(
