@@ -46,8 +46,20 @@ sub bump_version {
     $opts->{part} //= -1;
     $opts->{reset_smaller} //= 1;
 
-    my $vn = version->parse($v)->normal; $vn =~ s/\Av//;
     die "Invalid 'num', must be non-zero" unless $opts->{num} != 0;
+
+    if ($opts->{part} eq 'dev') {
+        version->parse($v);
+        my $dev1;
+        if ($v =~ /_([0-9]+)\z/) { $dev1 = $1 } else { $v .= "_000"; $dev1 = "000" }
+        my $dev2 = $dev1 + $opts->{num};
+        die "Cannot decrease version, would result in a negative dev part"
+            if $dev2 < 0;
+        $v =~ s/_([0-9]+)\z/sprintf("_%0".length($dev1)."d", $dev2)/e;
+        return $v;
+    }
+
+    my $vn = version->parse($v)->normal; $vn =~ s/\Av//;
     my @parts = split /\./, $vn;
     die "Invalid 'part', must not be smaller than -".@parts
         if $opts->{part} < -@parts;
@@ -152,13 +164,23 @@ Equivalent to:
 
 =head2 bump_version
 
-Will first normalize the version using:
+B<Bumping major/minor/patchlevel part>: Set C<part> to -3, -2, -1 respectively
+(or 0, 1, 2). To do this, C<bump_version> Will first normalize the version
+using:
 
- version->parse($v1)->normal
+ version->parse($v)->normal
 
 followed by bumping the part. Except for the first (most significant) part, if a
 number is bumped beyond 999 it will overflow to the next more significant part,
 for example: bumping v1.0.999 will result in v1.1.0.
+
+B<Bumping dev part>: Set C<part> to C<dev>. Currently no overflowing is done. To
+do this, first will check version number using:
+
+ version->parse($v)
+
+then will check for /_[0-9]+\z/ regex. Then will increment or decrement the dev
+part.
 
 
 =head1 SEE ALSO
