@@ -130,6 +130,8 @@ sub bump_version {
  Versioning::Scheme::Perl->bump_version('1.2.3', {part=>-2});                   # => 'v1.3.0'
  Versioning::Scheme::Perl->bump_version('1.2.3', {part=>0});                    # => 'v2.0.0'
  Versioning::Scheme::Perl->bump_version('1.2.3', {part=>-2, reset_smaller=>0}); # => 'v1.3.3'
+ Versioning::Scheme::Perl->bump_version('1.2.3'    , {part=>'dev'}        ); # => '1.2.3_001
+ Versioning::Scheme::Perl->bump_version('1.2.3_001', {part=>'dev', num=>2}); # => '1.2.3_003
 
 You can also mix this role into your class.
 
