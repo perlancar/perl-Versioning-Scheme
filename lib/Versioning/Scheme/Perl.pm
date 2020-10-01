@@ -144,6 +144,8 @@ L<version>.pm.
 
 =head1 METHODS
 
+=head2 versioning_scheme
+
 =head2 is_valid_version
 
 Uses L<version>.pm's C<parse()>.

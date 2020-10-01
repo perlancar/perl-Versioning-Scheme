@@ -13,8 +13,25 @@ requires qw(
                parse_version
        );
 
+sub versioning_scheme {
+    my $class = shift;
+    $class = ref $class if ref $class;
+    $class =~ s/\AVersioning::Scheme:://;
+    $class;
+}
+
 1;
 # ABSTRACT: Role for Versioning::Scheme::* modules
+
+=head1 PROVIDED METHODS
+
+=head2 versioning_scheme
+
+Usage:
+
+ print $vs->versioning_scheme; # Dotted
+
+Print the versioning scheme name.
 
 =head1 REQUIRED METHODS
 

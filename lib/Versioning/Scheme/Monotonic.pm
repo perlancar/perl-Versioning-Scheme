@@ -156,6 +156,8 @@ increase COMPATIBILITY instead; but in that case RELEASE will still be bumped by
 
 =head1 METHODS
 
+=head2 versioning_scheme
+
 =head2 is_valid_version
 
 =head2 parse_version
