@@ -1,3 +1,10 @@
+0.011   2020-10-01  Released-By: PERLANCAR; Urgency: medium
+
+	- Add versioning_scheme() method in Role::Versioning::Scheme. This will
+	  make it easy for consumer class users to know which versioning scheme
+	  the class follows.
+
+
 0.010   2019-04-14  Released-By: PERLANCAR
 
 	- No functional changes.
